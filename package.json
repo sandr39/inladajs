@@ -1,0 +1,29 @@
+{
+  "name": "inladajs",
+  "version": "1.0.0",
+  "description": "Visitor pattern based backend framework",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsc"
+  },
+  "engines" : {
+    "node" : ">=16.0.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/sandr39/inladajs.git"
+  },
+  "keywords": [
+    "visitor-pattern"
+  ],
+  "author": "Alex Ralkov",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/sandr39/inladajs/issues"
+  },
+  "homepage": "https://github.com/sandr39/inladajs#readme",
+  "devDependencies": {
+    "typescript": "^4.8.3"
+  }
+}
