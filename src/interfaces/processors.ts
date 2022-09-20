@@ -1,6 +1,6 @@
 import { IAnyEvent, IEvent } from './event';
 import { IRawAction, IServiceFn } from './base';
-import { ITransformFn } from './eventOperations';
+import { ITransformFn } from './contract';
 
 export type IEventProcessFn<
   TACTION_NAMES extends string,

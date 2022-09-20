@@ -1,6 +1,6 @@
 export { IRawAction } from './interfaces/base';
 export { IStorageClientFactory } from './interfaces/storage';
-export { IEventApi } from './interfaces';
+
 export { IErrorThrower } from './errors';
 export { IEventFactory } from './interfaces/factories';
 
