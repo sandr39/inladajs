@@ -1,0 +1,1 @@
+export { transactionProcessor } from './transactionProcessor';
