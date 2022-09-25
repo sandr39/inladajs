@@ -1,3 +1,7 @@
+export { errorThrowerFactory } from './errors';
+export { IAnyEvent, IEvent } from './interfaces/event';
+export { IAction, IEventResult } from './interfaces/base';
+
 export { IRawAction } from './interfaces/base';
 export { IStorageClientFactory } from './interfaces/storage';
 
@@ -26,4 +30,3 @@ export { contractProviderFactory } from './contractProvider';
 
 export { actionProcessorFactory } from './actionProcessor';
 export { IActionProcessorFactory } from './interfaces/factories';
-export { transactionProcessor } from './transactionProcessor';

@@ -24,15 +24,13 @@ const applyPluginsInner = async <TACTION_NAMES extends string, TPLUGIN_NAMES ext
     return;
   }
 
-  // todo redo - pluginlist is private. Is it ok?
-  // todo - seem plugin list to be outside event
   await pluginList(plugins, key, action)
     .map(f => (async (e: TEvent) => (await f(e)) || e))
     .reduce((acc, f) => acc.then(e => f(e)), Promise.resolve(event));
 };
 
 // todo rename
-const actionIfNotPlugin = async <TACTION_NAMES extends string, TPLUGIN_NAMES extends string, TEvent extends IAnyEvent>(
+const actionAction = async <TACTION_NAMES extends string, TPLUGIN_NAMES extends string, TEvent extends IAnyEvent>(
   event: TEvent,
   plugins: IPlugin<TACTION_NAMES, TPLUGIN_NAMES, TEvent>[],
   action: TACTION_NAMES,
@@ -67,7 +65,7 @@ const applyActionInner = async <TACTION_NAMES extends string, TPLUGIN_NAMES exte
 ) => {
   const processedEvent = event;
   await applyPluginsInner(processedEvent, plugins, PLUGIN_APPLY_STAGE.BEFORE, actionName);
-  processedEvent.result = await actionIfNotPlugin(processedEvent, plugins, actionName); // todo: document what ACTION & FINALIZATION should return
+  processedEvent.result = await actionAction(processedEvent, plugins, actionName);
   await applyPluginsInner(processedEvent, plugins, PLUGIN_APPLY_STAGE.MODIFY_QUERY, actionName);
   // eslint-disable-next-line no-param-reassign
   processedEvent.result = await actionFinalization(processedEvent, plugins, actionName) || event.result;

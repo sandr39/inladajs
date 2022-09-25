@@ -1,5 +1,5 @@
+import { transactionProcessor } from 'inlada-transaction-processor';
 import { IEvent } from './interfaces/event';
-import { transactionProcessor } from './transactionProcessor';
 
 const noop = (_: any) => _;
 

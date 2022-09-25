@@ -1,5 +1,5 @@
 import { IAnyEvent, IEvent } from './event';
-import { IRawAction, IServiceFn } from './base';
+import { IRawAction } from './base';
 import { ITransformFn } from './contract';
 
 export type IEventProcessFn<
@@ -59,10 +59,4 @@ export interface IActionProcessor<TEvent extends IAnyEvent> {
 export interface IContractProvider<TEvent extends IAnyEvent> {
   transformBefore: ITransformFn<TEvent>,
   transformAfter: ITransformFn<TEvent>,
-}
-
-export interface ITransactionService {
-  onStart?: IServiceFn,
-  onSuccess?: IServiceFn,
-  onFail?: IServiceFn,
 }
