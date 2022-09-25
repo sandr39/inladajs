@@ -43,12 +43,11 @@ export interface IEventAdaptor<
   TOBJECT_NAMES extends string,
   TOPTION_NAMES extends string,
   TPLUGIN_NAMES extends string,
-  IQuery
   > {
   makePreEvent: (event: Record<string, unknown>, objectName: string, actionName: string, actionNameType?: string) =>
     Promise<{ preEvent: Record<string, unknown>, preAction: IRawAction<TACTION_NAMES, TOBJECT_NAMES>}>,
-  formSuccessResult: (e: IEvent<TACTION_NAMES, TERROR_NAMES, TOBJECT_NAMES, TOPTION_NAMES, TPLUGIN_NAMES, IQuery>) => unknown
-  formErrorResult: (e: IEvent<TACTION_NAMES, TERROR_NAMES, TOBJECT_NAMES, TOPTION_NAMES, TPLUGIN_NAMES, IQuery>) => unknown
+  formSuccessResult: (e: IEvent<TACTION_NAMES, TERROR_NAMES, TOBJECT_NAMES, TOPTION_NAMES, TPLUGIN_NAMES>) => unknown
+  formErrorResult: (e: IEvent<TACTION_NAMES, TERROR_NAMES, TOBJECT_NAMES, TOPTION_NAMES, TPLUGIN_NAMES>) => unknown
   formFatalErrorResult: (exception: unknown) => unknown
 }
 
@@ -58,13 +57,12 @@ export const eventAdaptorFactory = <
   TOBJECT_NAMES extends string,
   TOPTION_NAMES extends string,
   TPLUGIN_NAMES extends string,
-IQuery
 >(
     allowedActions: Partial<Record<TOBJECT_NAMES, TACTION_NAMES[]>>,
     allowedOptions: TOPTION_NAMES[],
     actionRedirect: IActionRedirect<TACTION_NAMES, TOBJECT_NAMES>,
     customEventProcessor: (event: Record<string, unknown>) => Promise<Record<string, unknown>>,
-  ): IEventAdaptor<TACTION_NAMES, TERROR_NAMES, TOBJECT_NAMES, TOPTION_NAMES, TPLUGIN_NAMES, IQuery> => ({
+  ): IEventAdaptor<TACTION_NAMES, TERROR_NAMES, TOBJECT_NAMES, TOPTION_NAMES, TPLUGIN_NAMES> => ({
     makePreEvent: async (event, objectName, actionName, actionNameType?) => {
       const effectiveActionName = `${actionName}${actionNameType ? `-${actionNameType}` : ''}`;
       const actionAfterRedirect = redirectAction<TACTION_NAMES, TOBJECT_NAMES>(

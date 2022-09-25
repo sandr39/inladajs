@@ -8,8 +8,7 @@ export type IEventProcessFn<
   TOBJECT_NAMES extends string,
   TOPTION_NAMES extends string,
   TPLUGIN_NAMES extends string,
-  IQuery,
-  TEvent extends IEvent<TACTION_NAMES, TERROR_NAMES, TOBJECT_NAMES, TOPTION_NAMES, TPLUGIN_NAMES, IQuery>
+  TEvent extends IEvent<TACTION_NAMES, TERROR_NAMES, TOBJECT_NAMES, TOPTION_NAMES, TPLUGIN_NAMES>
   > = (
   sourceEvent: Record<string, unknown>,
   preAction: IRawAction<TACTION_NAMES, TOBJECT_NAMES>,
@@ -21,8 +20,7 @@ export interface IExceptionFromBowelsOfTheCode<
   TOBJECT_NAMES extends string,
   TOPTION_NAMES extends string,
   TPLUGIN_NAMES extends string,
-  IQuery,
-  TEvent extends IEvent<TACTION_NAMES, TERROR_NAMES, TOBJECT_NAMES, TOPTION_NAMES, TPLUGIN_NAMES, IQuery>
+  TEvent extends IEvent<TACTION_NAMES, TERROR_NAMES, TOBJECT_NAMES, TOPTION_NAMES, TPLUGIN_NAMES>
   > {
   [k: string] : any,
   $event: TEvent
@@ -35,8 +33,7 @@ export interface IEventProcessor<
   TOBJECT_NAMES extends string,
   TOPTION_NAMES extends string,
   TPLUGIN_NAMES extends string,
-  IQuery,
-  TEvent extends IEvent<TACTION_NAMES, TERROR_NAMES, TOBJECT_NAMES, TOPTION_NAMES, TPLUGIN_NAMES, IQuery>
+  TEvent extends IEvent<TACTION_NAMES, TERROR_NAMES, TOBJECT_NAMES, TOPTION_NAMES, TPLUGIN_NAMES>
   > {
   processEvent: (
     sourceEvent: Record<string, unknown>, preAction: IRawAction<TACTION_NAMES, TOBJECT_NAMES>

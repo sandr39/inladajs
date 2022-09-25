@@ -12,15 +12,14 @@ export const eventFactoryFactory = <
   TOBJECT_NAMES extends string,
   TOPTION_NAMES extends string,
   TPLUGIN_NAMES extends string,
-  IQuery, // todo some interface
-  TEvent extends IEvent<TACTION_NAMES, TERROR_NAMES, TOBJECT_NAMES, TOPTION_NAMES, TPLUGIN_NAMES, IQuery>
+  TEvent extends IEvent<TACTION_NAMES, TERROR_NAMES, TOBJECT_NAMES, TOPTION_NAMES, TPLUGIN_NAMES>
   >(
     errorThrower: IErrorThrower<TERROR_NAMES, TEvent>,
     fullObjectsInfo: Partial<Record<TOBJECT_NAMES, IObjectInfo<TOBJECT_NAMES>>>,
     relations: IEntityRelation<TOBJECT_NAMES>[],
     storageFactory: IStorageClientFactory<TOBJECT_NAMES>,
     EventConstructor: any, // todo type
-  ): IEventFactory<TACTION_NAMES, TERROR_NAMES, TOBJECT_NAMES, TOPTION_NAMES, TPLUGIN_NAMES, IQuery, TEvent> => async (
+  ): IEventFactory<TACTION_NAMES, TERROR_NAMES, TOBJECT_NAMES, TOPTION_NAMES, TPLUGIN_NAMES, TEvent> => async (
     sourceEvent: Record<string, unknown>,
     actionParams: IRawAction<TACTION_NAMES, TOBJECT_NAMES>,
     api: IEventApi<TACTION_NAMES, TOBJECT_NAMES, TEvent>,

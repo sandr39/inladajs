@@ -28,8 +28,7 @@ export const processInTransaction = async <
   TOBJECT_NAMES extends string,
   TOPTION_NAMES extends string,
   TPLUGIN_NAMES extends string,
-  IQuery,
-  TEvent extends IEvent<TACTION_NAMES, TERROR_NAMES, TOBJECT_NAMES, TOPTION_NAMES, TPLUGIN_NAMES, IQuery>>(
+  TEvent extends IEvent<TACTION_NAMES, TERROR_NAMES, TOBJECT_NAMES, TOPTION_NAMES, TPLUGIN_NAMES>>(
   fnAction: () => Promise<TEvent>,
   uid: string,
   onSuccessAfterCommit = noop,

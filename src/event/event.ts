@@ -15,8 +15,8 @@ export class Event
   TERROR_NAMES extends string,
   TOBJECT_NAMES extends string,
   TOPTION_NAMES extends string,
-  TPLUGIN_NAMES extends string,
-  IQuery> implements IEvent<TACTION_NAMES, TERROR_NAMES, TOBJECT_NAMES, TOPTION_NAMES, TPLUGIN_NAMES, IQuery> {
+  TPLUGIN_NAMES extends string
+  > implements IEvent<TACTION_NAMES, TERROR_NAMES, TOBJECT_NAMES, TOPTION_NAMES, TPLUGIN_NAMES> {
   private readonly source: Record<string, unknown>
   private data: {
     params: Partial<Record<TOPTION_NAMES, unknown>>,
@@ -34,14 +34,14 @@ export class Event
     created: {},
   }
 
-  errorThrower: IErrorThrower<TERROR_NAMES, IEvent<TACTION_NAMES, TERROR_NAMES, TOBJECT_NAMES, TOPTION_NAMES, TPLUGIN_NAMES, IQuery>>
+  errorThrower: IErrorThrower<TERROR_NAMES, IEvent<TACTION_NAMES, TERROR_NAMES, TOBJECT_NAMES, TOPTION_NAMES, TPLUGIN_NAMES>>
   storageClient: IStorageClient<TOBJECT_NAMES> = {} as unknown as IStorageClient<TOBJECT_NAMES>
   storageClientFactory: IStorageClientFactory<TOBJECT_NAMES>
 
   private glob: {
     fullInfo: Partial<Record<TOBJECT_NAMES, IObjectInfo<TOBJECT_NAMES>>>,
     relations: IEntityRelation<TOBJECT_NAMES>[],
-    api: IEventApi<TACTION_NAMES, TOBJECT_NAMES, IEvent<TACTION_NAMES, TERROR_NAMES, TOBJECT_NAMES, TOPTION_NAMES, TPLUGIN_NAMES, IQuery>>,
+    api: IEventApi<TACTION_NAMES, TOBJECT_NAMES, IEvent<TACTION_NAMES, TERROR_NAMES, TOBJECT_NAMES, TOPTION_NAMES, TPLUGIN_NAMES>>,
     tz: number,
   }
 
@@ -52,10 +52,9 @@ export class Event
   private pluginData: Partial<Record<TPLUGIN_NAMES, unknown>> = {}
 
   result: IEventResult = null
-  parentEvent?: IEvent<TACTION_NAMES, TERROR_NAMES, TOBJECT_NAMES, TOPTION_NAMES, TPLUGIN_NAMES, IQuery> = undefined
-  childrenEvents: IEvent<TACTION_NAMES, TERROR_NAMES, TOBJECT_NAMES, TOPTION_NAMES, TPLUGIN_NAMES, IQuery>[] = []
+  parentEvent?: IEvent<TACTION_NAMES, TERROR_NAMES, TOBJECT_NAMES, TOPTION_NAMES, TPLUGIN_NAMES> = undefined
+  childrenEvents: IEvent<TACTION_NAMES, TERROR_NAMES, TOBJECT_NAMES, TOPTION_NAMES, TPLUGIN_NAMES>[] = []
 
-  query?: IQuery = undefined
   error?: IResultError<TERROR_NAMES> = undefined
 
   uid: string
@@ -67,7 +66,7 @@ export class Event
     errorThrower: IErrorThrower<TERROR_NAMES, any>,
     fullObjectsInfo: Partial<Record<TOBJECT_NAMES, IObjectInfo<TOBJECT_NAMES>>>,
     relations: IEntityRelation<TOBJECT_NAMES>[],
-    api: IEventApi<TACTION_NAMES, TOBJECT_NAMES, IEvent<TACTION_NAMES, TERROR_NAMES, TOBJECT_NAMES, TOPTION_NAMES, TPLUGIN_NAMES, IQuery>>,
+    api: IEventApi<TACTION_NAMES, TOBJECT_NAMES, IEvent<TACTION_NAMES, TERROR_NAMES, TOBJECT_NAMES, TOPTION_NAMES, TPLUGIN_NAMES>>,
     pgClientFactory: IStorageClientFactory<TOBJECT_NAMES>,
   ) {
     this.source = sourceEvent;
@@ -139,8 +138,8 @@ export class Event
     if (fieldName === OPTION_NAMES_DEFAULT.$useSecretFields) {
       this.useSecret();
     } else if (fieldName === OPTION_NAMES_DEFAULT.$parentEvent) {
-      this.parentEvent = value as IEvent<TACTION_NAMES, TERROR_NAMES, TOBJECT_NAMES, TOPTION_NAMES, TPLUGIN_NAMES, IQuery>;
-      this.uid = (value as IEvent<TACTION_NAMES, TERROR_NAMES, TOBJECT_NAMES, TOPTION_NAMES, TPLUGIN_NAMES, IQuery>).uid;
+      this.parentEvent = value as IEvent<TACTION_NAMES, TERROR_NAMES, TOBJECT_NAMES, TOPTION_NAMES, TPLUGIN_NAMES>;
+      this.uid = (value as IEvent<TACTION_NAMES, TERROR_NAMES, TOBJECT_NAMES, TOPTION_NAMES, TPLUGIN_NAMES>).uid;
     } else {
       this.data.params[fieldName] = value;
     }
@@ -271,11 +270,6 @@ export class Event
 
     await this.glob.api.mergeIntoParentEvent(processedChildEvent);
 
-    // todo redo
-    if (processedChildEvent.getOptions(OPTION_NAMES_DEFAULT.$doNotExecAndReturnQuery as TOPTION_NAMES)) {
-      return processedChildEvent.query;
-    }
-
     return processedChildEvent.result;
   }
 
@@ -302,7 +296,7 @@ export class Event
 
   setError(
     errorName: TERROR_NAMES,
-    error: IError<TERROR_NAMES, IEvent<TACTION_NAMES, TERROR_NAMES, TOBJECT_NAMES, TOPTION_NAMES, TPLUGIN_NAMES, IQuery>>,
+    error: IError<TERROR_NAMES, IEvent<TACTION_NAMES, TERROR_NAMES, TOBJECT_NAMES, TOPTION_NAMES, TPLUGIN_NAMES>>,
     details?: any,
   ) {
     this.error = {

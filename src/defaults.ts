@@ -6,7 +6,6 @@ export enum AUTH_FIELDS {
 export enum OPTION_NAMES_DEFAULT {
   $parentEvent = '$parentEvent',
   $useSecretFields = '$useSecretFields',
-  $doNotExecAndReturnQuery = '$doNotExecAndReturnQuery',
   $doNotAfterActionProcess = '$doNotAfterActionProcess',
   $lang = '$lang',
 }
