@@ -18,7 +18,7 @@ export const eventFactoryFactory = <
     errorThrower: IErrorThrower<TERROR_NAMES, TEvent>,
     fullObjectsInfo: Partial<Record<TOBJECT_NAMES, IObjectInfo<TOBJECT_NAMES>>>,
     relations: IEntityRelation<TOBJECT_NAMES>[],
-    storageFactory: IStorageClientFactory<TOBJECT_NAMES>,
+    storageFactory: IStorageClientFactory,
     EventConstructor: any, // todo type
   ): IEventFactory<TACTION_NAMES, TERROR_NAMES, TOBJECT_NAMES, TOPTION_NAMES, TPLUGIN_NAMES, IQuery, TEvent> => async (
     sourceEvent: Record<string, unknown>,

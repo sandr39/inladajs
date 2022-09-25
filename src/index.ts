@@ -3,7 +3,7 @@ export { IAnyEvent, IEvent } from './interfaces/event';
 export { IAction, IEventResult } from './interfaces/base';
 
 export { IRawAction } from './interfaces/base';
-export { IStorageClientFactory } from './interfaces/storage';
+export { IStorageClientFactory, IStorageClient } from './interfaces/storage';
 
 export { IErrorThrower } from './errors';
 export { IEventFactory } from './interfaces/factories';
@@ -30,3 +30,4 @@ export { contractProviderFactory } from './contractProvider';
 
 export { actionProcessorFactory } from './actionProcessor';
 export { IActionProcessorFactory } from './interfaces/factories';
+

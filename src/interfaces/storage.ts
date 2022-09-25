@@ -21,7 +21,7 @@ export interface IEntityRelation<OBJECT_NAMES extends string> {
   fieldNameInQuery: string[]
 }
 
-export interface IStorageClient<TOBJECT_NAMES extends string> {
+export interface IStorageClient {
   query: <T = Record<any, any>>(query: string, params?: any[]) => Promise<{ rows: T[] }>
   begin: () => Promise<void>
   commit: () => Promise<void>
@@ -29,8 +29,6 @@ export interface IStorageClient<TOBJECT_NAMES extends string> {
   finalize: () => Promise<void>
   getTableColumns: (table: string) => Promise<string[]>
   getTableUniqueKey: (table: string) => Promise<string>
-  createQueryBuilder: () => any // IQBFacade
-  getRelations: (relations: IEntityRelation<TOBJECT_NAMES>[], entityName: TOBJECT_NAMES) => { [field : string]: number[] }
 }
 
-export type IStorageClientFactory<TOBJECT_NAMES extends string> = (uid: string) => Promise<IStorageClient<TOBJECT_NAMES>>;
+export type IStorageClientFactory = (uid: string) => Promise<IStorageClient>;
