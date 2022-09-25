@@ -270,11 +270,6 @@ export class Event
 
     await this.glob.api.mergeIntoParentEvent(processedChildEvent);
 
-    // todo redo
-    if (processedChildEvent.getOptions(OPTION_NAMES_DEFAULT.$doNotExecAndReturnQuery as TOPTION_NAMES)) {
-      return processedChildEvent.query;
-    }
-
     return processedChildEvent.result;
   }
 
