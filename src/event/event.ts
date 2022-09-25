@@ -35,8 +35,8 @@ export class Event
   }
 
   errorThrower: IErrorThrower<TERROR_NAMES, IEvent<TACTION_NAMES, TERROR_NAMES, TOBJECT_NAMES, TOPTION_NAMES, TPLUGIN_NAMES>>
-  storageClient: IStorageClient<TOBJECT_NAMES> = {} as unknown as IStorageClient<TOBJECT_NAMES>
-  storageClientFactory: IStorageClientFactory<TOBJECT_NAMES>
+  storageClient: IStorageClient = {} as unknown as IStorageClient
+  storageClientFactory: IStorageClientFactory
 
   private glob: {
     fullInfo: Partial<Record<TOBJECT_NAMES, IObjectInfo<TOBJECT_NAMES>>>,
@@ -67,7 +67,7 @@ export class Event
     fullObjectsInfo: Partial<Record<TOBJECT_NAMES, IObjectInfo<TOBJECT_NAMES>>>,
     relations: IEntityRelation<TOBJECT_NAMES>[],
     api: IEventApi<TACTION_NAMES, TOBJECT_NAMES, IEvent<TACTION_NAMES, TERROR_NAMES, TOBJECT_NAMES, TOPTION_NAMES, TPLUGIN_NAMES>>,
-    pgClientFactory: IStorageClientFactory<TOBJECT_NAMES>,
+    pgClientFactory: IStorageClientFactory,
   ) {
     this.source = sourceEvent;
     this.actionName = actionName;
@@ -269,6 +269,11 @@ export class Event
     this.childrenEvents.push(...processedChildEvent.childrenEvents);
 
     await this.glob.api.mergeIntoParentEvent(processedChildEvent);
+
+    // todo redo
+    if (processedChildEvent.getOptions(OPTION_NAMES_DEFAULT.$doNotExecAndReturnQuery as TOPTION_NAMES)) {
+      return processedChildEvent.query;
+    }
 
     return processedChildEvent.result;
   }

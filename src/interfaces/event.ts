@@ -28,8 +28,8 @@ export interface IEvent<TACTION_NAMES extends string,
 
   error?: IResultError<TERROR_NAMES>
   errorThrower: IErrorThrower<TERROR_NAMES, IEvent<TACTION_NAMES, TERROR_NAMES, TOBJECT_NAMES, TOPTION_NAMES, TPLUGIN_NAMES>>
-  storageClientFactory: IStorageClientFactory<TOBJECT_NAMES>
-  storageClient: IStorageClient<TOBJECT_NAMES>
+  storageClientFactory: IStorageClientFactory
+  storageClient: IStorageClient
 
   uid: string
 
