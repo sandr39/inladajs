@@ -1,3 +1,6 @@
+export { IEntityRelation, RELATION_TYPE } from './interfaces/storage';
+export { IObjectInfo } from './interfaces/objectInfo';
+
 export { errorThrowerFactory } from './errors';
 export { IAnyEvent, IEvent } from './interfaces/event';
 export { IAction, IEventResult } from './interfaces/base';
@@ -30,4 +33,3 @@ export { contractProviderFactory } from './contractProvider';
 
 export { actionProcessorFactory } from './actionProcessor';
 export { IActionProcessorFactory } from './interfaces/factories';
-

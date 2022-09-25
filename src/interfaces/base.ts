@@ -14,5 +14,3 @@ export interface IRawAction<TACTION_NAMES extends string, TOBJECT_NAMES extends 
 export type IIdObject = Record<string | 'id', unknown>
 
 export type IEventResult = boolean | IIdObject | IIdObject[] | null | number;
-
-export type IServiceFn = (uid: string) => Promise<void>;

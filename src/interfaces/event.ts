@@ -1,6 +1,5 @@
 import { IEventResult, IRawAction } from './base';
 import { IErrorThrower } from '../errors';
-import { IStorageClient, IStorageClientFactory } from './storage';
 import { IResultError, IError } from './error';
 
 import { AUTH_FIELDS } from '../defaults';
@@ -28,12 +27,8 @@ export interface IEvent<TACTION_NAMES extends string,
 
   error?: IResultError<TERROR_NAMES>
   errorThrower: IErrorThrower<TERROR_NAMES, IEvent<TACTION_NAMES, TERROR_NAMES, TOBJECT_NAMES, TOPTION_NAMES, TPLUGIN_NAMES>>
-  storageClientFactory: IStorageClientFactory
-  storageClient: IStorageClient
 
   uid: string
-
-  init: () => Promise<void>
 
   add: (fieldName: string | TOPTION_NAMES, value: any) => IEvent<TACTION_NAMES, TERROR_NAMES, TOBJECT_NAMES, TOPTION_NAMES, TPLUGIN_NAMES>,
   addOption: (fieldName: TOPTION_NAMES, value?: unknown) => IEvent<TACTION_NAMES, TERROR_NAMES, TOBJECT_NAMES, TOPTION_NAMES, TPLUGIN_NAMES>,

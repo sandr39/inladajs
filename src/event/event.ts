@@ -3,7 +3,7 @@ import { IEventResult, IRawAction } from '../interfaces/base';
 import { IEvent, IMeInfo } from '../interfaces/event';
 
 import { IErrorThrower } from '../errors';
-import { IEntityRelation, IStorageClient, IStorageClientFactory } from '../interfaces/storage';
+import { IEntityRelation } from '../interfaces/storage';
 import { IResultError, IError } from '../interfaces/error';
 import { AUTH_FIELDS, OPTION_NAMES_DEFAULT } from '../defaults';
 import { IEventApi } from '../interfaces/api';
@@ -35,8 +35,6 @@ export class Event
   }
 
   errorThrower: IErrorThrower<TERROR_NAMES, IEvent<TACTION_NAMES, TERROR_NAMES, TOBJECT_NAMES, TOPTION_NAMES, TPLUGIN_NAMES>>
-  storageClient: IStorageClient = {} as unknown as IStorageClient
-  storageClientFactory: IStorageClientFactory
 
   private glob: {
     fullInfo: Partial<Record<TOBJECT_NAMES, IObjectInfo<TOBJECT_NAMES>>>,
@@ -67,7 +65,6 @@ export class Event
     fullObjectsInfo: Partial<Record<TOBJECT_NAMES, IObjectInfo<TOBJECT_NAMES>>>,
     relations: IEntityRelation<TOBJECT_NAMES>[],
     api: IEventApi<TACTION_NAMES, TOBJECT_NAMES, IEvent<TACTION_NAMES, TERROR_NAMES, TOBJECT_NAMES, TOPTION_NAMES, TPLUGIN_NAMES>>,
-    pgClientFactory: IStorageClientFactory,
   ) {
     this.source = sourceEvent;
     this.actionName = actionName;
@@ -107,14 +104,8 @@ export class Event
 
     Object.entries(this.source).forEach(([k, v]) => this.add(k, v));
 
-    // todo via params
-    this.storageClientFactory = pgClientFactory;
     // this.reParseIds();
     // this.reParseAction();
-  }
-
-  async init() {
-    this.storageClient = await this.storageClientFactory(this.uid);
   }
 
   add(fieldName: string | TOPTION_NAMES, value: any) {
