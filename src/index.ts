@@ -1,3 +1,6 @@
+export { IIdObject } from './interfaces/base';
+export { IEventApi } from './interfaces/api';
+
 export { IEntityRelation, RELATION_TYPE } from './interfaces/storage';
 export { IObjectInfo } from './interfaces/objectInfo';
 
