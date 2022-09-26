@@ -11,7 +11,8 @@ export interface IObjectInfo<TOBJECT_NAMES extends string> {
 
   socketMessage?: {
     all?: string[],
-    notMe?: string[]
+    notMe?: string[],
+    specificUser?: string[],
   },
   archive?: boolean,
   parentEntity?: TOBJECT_NAMES[] | TOBJECT_NAMES,
