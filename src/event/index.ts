@@ -2,7 +2,7 @@ import { IEventFactory } from '../interfaces/factories';
 import { IRawAction } from '../interfaces/base';
 import { IErrorThrower } from '../errors';
 import { IEvent } from '../interfaces/event';
-import { IEntityRelation, IStorageClientFactory } from '../interfaces/storage';
+import { IEntityRelation } from '../interfaces/storage';
 import { IEventApi } from '../interfaces/api';
 import { IObjectInfo } from '../interfaces/objectInfo';
 
@@ -17,7 +17,6 @@ export const eventFactoryFactory = <
     errorThrower: IErrorThrower<TERROR_NAMES, TEvent>,
     fullObjectsInfo: Partial<Record<TOBJECT_NAMES, IObjectInfo<TOBJECT_NAMES>>>,
     relations: IEntityRelation<TOBJECT_NAMES>[],
-    storageFactory: IStorageClientFactory,
     EventConstructor: any, // todo type
   ): IEventFactory<TACTION_NAMES, TERROR_NAMES, TOBJECT_NAMES, TOPTION_NAMES, TPLUGIN_NAMES, TEvent> => async (
     sourceEvent: Record<string, unknown>,
@@ -25,7 +24,7 @@ export const eventFactoryFactory = <
     api: IEventApi<TACTION_NAMES, TOBJECT_NAMES, TEvent>,
   ): Promise<TEvent> => {
     const resultEvent = new EventConstructor(
-      sourceEvent, actionParams.actionName, actionParams.objectName, errorThrower, fullObjectsInfo, relations, api, storageFactory,
+      sourceEvent, actionParams.actionName, actionParams.objectName, errorThrower, fullObjectsInfo, relations, api,
     );
 
     await resultEvent.init();

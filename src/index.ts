@@ -1,38 +1,29 @@
-export { IIdObject } from './interfaces/base';
+export { ERROR_NAMES_DEFAULT, OPTION_NAMES_DEFAULT } from './defaults';
+
+export {
+  IIdObject, IActionRedirect, IAction, IEventResult, IRawAction,
+} from './interfaces/base';
+export {
+  IEntityRelation, RELATION_TYPE, IStorageClientFactory, IStorageClient,
+} from './interfaces/storage';
+
 export { IEventApi } from './interfaces/api';
-
-export { IEntityRelation, RELATION_TYPE } from './interfaces/storage';
 export { IObjectInfo } from './interfaces/objectInfo';
-
-export { errorThrowerFactory } from './errors';
-export { IAnyEvent, IEvent } from './interfaces/event';
-export { IAction, IEventResult } from './interfaces/base';
-
-export { IRawAction } from './interfaces/base';
-export { IStorageClientFactory, IStorageClient } from './interfaces/storage';
-
-export { IErrorThrower } from './errors';
-export { IEventFactory } from './interfaces/factories';
-
-export { IActionRedirect } from './interfaces/base';
-export { IPluginInfo } from './interfaces/plugin';
-
+export { errorThrowerFactory, IErrorThrower } from './errors';
 export { IError } from './interfaces/error';
-
-export { PLUGIN_APPLY_STAGE } from './enums';
-export { IPlugin } from './interfaces/plugin';
-
-export { TransformStages } from './enums';
-export { ITransformation } from './interfaces/contract';
-
-export { eventProcessorFactory } from './eventProcessor';
-
-export { eventFactoryFactory } from './event';
-export { eventAdaptorFactory } from './eventAdaptor';
+export { IAnyEvent, IEvent } from './interfaces/event';
 
 export { Event } from './event/event';
 
-export { contractProviderFactory } from './contractProvider';
+export { eventFactoryFactory } from './event';
+export { IEventFactory, IActionProcessorFactory } from './interfaces/factories';
 
+export { IPluginInfo, IPlugin, IPluginSet } from './interfaces/plugin';
+
+export { PLUGIN_APPLY_STAGE, TransformStages } from './enums';
+export { ITransformation } from './interfaces/contract';
+
+export { eventProcessorFactory } from './eventProcessor';
+export { eventAdaptorFactory } from './eventAdaptor';
+export { contractProviderFactory } from './contractProvider';
 export { actionProcessorFactory } from './actionProcessor';
-export { IActionProcessorFactory } from './interfaces/factories';

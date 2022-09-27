@@ -1,7 +1,7 @@
-import { AFTER_ACTION_STAGES, PLUGIN_APPLY_STAGE, PLUGIN_INFO_FIELD_NAMES } from '../enums';
+import { PLUGIN_APPLY_STAGE, PLUGIN_INFO_FIELD_NAMES } from '../enums';
 import { IAnyEvent } from '../interfaces/event';
 import { IPlugin } from '../interfaces/plugin';
-import { ERROR_NAMES_DEFAULT, OPTION_NAMES_DEFAULT } from '../defaults';
+import { ERROR_NAMES_DEFAULT } from '../defaults';
 
 const pluginList = <TACTION_NAMES extends string, TPLUGIN_NAMES extends string, TEvent extends IAnyEvent>(
   plugins: IPlugin<TACTION_NAMES, TPLUGIN_NAMES, TEvent>[],
@@ -20,10 +20,6 @@ const applyPluginsInner = async <TACTION_NAMES extends string, TPLUGIN_NAMES ext
   key: PLUGIN_APPLY_STAGE | TACTION_NAMES,
   action?: TACTION_NAMES,
 ): Promise<void> => {
-  if (event.getOptions(OPTION_NAMES_DEFAULT.$doNotAfterActionProcess) && AFTER_ACTION_STAGES.includes(key as PLUGIN_APPLY_STAGE)) {
-    return;
-  }
-
   await pluginList(plugins, key, action)
     .map(f => (async (e: TEvent) => (await f(e)) || e))
     .reduce((acc, f) => acc.then(e => f(e)), Promise.resolve(event));

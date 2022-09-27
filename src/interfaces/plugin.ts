@@ -29,3 +29,14 @@ export type IPlugin<
   [PLUGIN_APPLY_STAGE.AFTER_ALL]?: IPluginPureFunction<TEvent>
   [PLUGIN_APPLY_STAGE.AFTER_ACTION]?: IPluginPureFunction<TEvent>
 } & IPluginInfo<ACTION_NAMES, PLUGIN_NAMES>
+
+export type IPluginSet<
+TACTION_NAMES extends string,
+  PLUGIN_NAMES extends string,
+  TPLUGIN_SET_NAMES extends string,
+  TEvent extends IAnyEvent
+  > = Record<TPLUGIN_SET_NAMES, {
+  plugins: IPlugin<TACTION_NAMES, PLUGIN_NAMES, TEvent>[],
+  excludedStages?: PLUGIN_APPLY_STAGE[],
+  name: TPLUGIN_SET_NAMES
+}>

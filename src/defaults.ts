@@ -8,6 +8,7 @@ export enum OPTION_NAMES_DEFAULT {
   $useSecretFields = '$useSecretFields',
   $doNotAfterActionProcess = '$doNotAfterActionProcess',
   $lang = '$lang',
+  $pluginSet = '$pluginSet'
 }
 
 export enum ERROR_NAMES_DEFAULT {

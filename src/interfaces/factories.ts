@@ -1,7 +1,7 @@
 import { IRawAction } from './base';
 import { IEvent } from './event';
 import { IActionProcessor, IContractProvider } from './processors';
-import { IPlugin } from './plugin';
+import { IPlugin, IPluginSet } from './plugin';
 import { IEventApi } from './api';
 
 export type IEventFactory<
@@ -27,7 +27,8 @@ export type IContractProviderFactory<
 export type IActionProcessorFactory = <
   TACTION_NAMES extends string,
   TPLUGIN_NAMES extends string,
-  TEvent extends IEvent<TACTION_NAMES, any, any, any, TPLUGIN_NAMES>
+  TEvent extends IEvent<TACTION_NAMES, any, any, any, TPLUGIN_NAMES>,
+  TPLUGIN_SET_NAMES extends string = string
   >(
-  plugins: IPlugin<TACTION_NAMES, TPLUGIN_NAMES, TEvent>[],
+  plugins: IPlugin<TACTION_NAMES, TPLUGIN_NAMES, TEvent>[] | IPluginSet<TACTION_NAMES, TPLUGIN_NAMES, TPLUGIN_SET_NAMES, TEvent>,
 ) => IActionProcessor<TEvent>
