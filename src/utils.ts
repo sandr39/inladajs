@@ -31,8 +31,8 @@ export const processInTransaction = async <
   TEvent extends IEvent<TACTION_NAMES, TERROR_NAMES, TOBJECT_NAMES, TOPTION_NAMES, TPLUGIN_NAMES>>(
   fnAction: () => Promise<TEvent>,
   uid: string,
-  onSuccessAfterCommit = noop,
-  onFailBeforeRollback = noop,
+  onSuccessAfterCommit = (e: TEvent) => null as any,
+  onFailBeforeRollback = (exception: any) => exception,
   onFailAfterRollback = noop,
   timeout?: number,
 ) => {

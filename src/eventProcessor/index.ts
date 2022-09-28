@@ -52,7 +52,7 @@ export const processEvent = <
 
     const contractProvider = contractProviderFactory(preAction.actionName, preAction.objectName);
 
-    event = await contractProvider.transformAfter(event);
+    event = await contractProvider.transformBefore(event);
 
     await actionProcessor.processBeforeAllActions(event);
     event = await actionProcessor.processEventAction(event);
@@ -64,22 +64,22 @@ export const processEvent = <
     return event;
   };
 
-const logOnActionFail = async <
+const logOnActionFail = <
   TACTION_NAMES extends string,
   TERROR_NAMES extends string,
   TOBJECT_NAMES extends string,
   TOPTION_NAMES extends string,
   TPLUGIN_NAMES extends string,
   TEvent extends IEvent<TACTION_NAMES, TERROR_NAMES, TOBJECT_NAMES, TOPTION_NAMES, TPLUGIN_NAMES>
-  >(exception: IExceptionFromBowelsOfTheCode<TACTION_NAMES, TERROR_NAMES, TOBJECT_NAMES, TOPTION_NAMES, TPLUGIN_NAMES, TEvent>) => {
-  const resultEvent = exception.$event;
-  if (!exception.$event) {
+  > () => async (exception: IExceptionFromBowelsOfTheCode<TACTION_NAMES, TERROR_NAMES, TOBJECT_NAMES, TOPTION_NAMES, TPLUGIN_NAMES, TEvent>) => {
+    const resultEvent = exception.$event;
+    if (!exception.$event) {
     // logger.log('exception.$event is not set');
-  }
+    }
 
-  // logger.error(resultEvent?.me.name, resultEvent?.actionName, exception?.stack);
-  return exception;
-};
+    // logger.error(resultEvent?.me.name, resultEvent?.actionName, exception?.stack);
+    return exception;
+  };
 
 const processRequestActionInnerSuccess = <
   TACTION_NAMES extends string,
@@ -134,7 +134,13 @@ const processRequest = <
   TEvent extends IEvent<TACTION_NAMES, TERROR_NAMES, TOBJECT_NAMES, TOPTION_NAMES, TPLUGIN_NAMES>
   >(
     processEventFn: IEventProcessFn<TACTION_NAMES, TERROR_NAMES, TOBJECT_NAMES, TOPTION_NAMES, TPLUGIN_NAMES, TEvent>,
-  ) => async (
+    eventAdaptor: IEventAdaptor<TACTION_NAMES, TERROR_NAMES, TOBJECT_NAMES, TOPTION_NAMES, TPLUGIN_NAMES>,
+  ) => {
+  const processRequestActionInnerSuccessFn = processRequestActionInnerSuccess(eventAdaptor);
+  const logOnActionFailFn = logOnActionFail();
+  const processActionFailFn = processActionFail(eventAdaptor);
+
+  return async (
     sourceEvent: Record<string, unknown>, preAction: IRawAction<TACTION_NAMES, TOBJECT_NAMES>,
   ) => {
     const uid = v4();
@@ -142,11 +148,12 @@ const processRequest = <
     return processInTransaction<TACTION_NAMES, TERROR_NAMES, TOBJECT_NAMES, TOPTION_NAMES, TPLUGIN_NAMES, TEvent>(
       () => processEventFn(sourceEvent, preAction),
       uid,
-      processRequestActionInnerSuccess,
-      logOnActionFail,
-      processActionFail,
+      processRequestActionInnerSuccessFn,
+      logOnActionFailFn,
+      processActionFailFn,
     );
   };
+};
 
 export const eventProcessorFactory = <
   TACTION_NAMES extends string,
@@ -159,6 +166,7 @@ export const eventProcessorFactory = <
     contractProviderFactory: IContractProviderFactory<TACTION_NAMES, TOBJECT_NAMES, TEvent>,
     actionProcessor: IActionProcessor<TEvent>,
     eventFactory: IEventFactory<TACTION_NAMES, TERROR_NAMES, TOBJECT_NAMES, TOPTION_NAMES, TPLUGIN_NAMES, TEvent>,
+    eventAdaptor: IEventAdaptor<TACTION_NAMES, TERROR_NAMES, TOBJECT_NAMES, TOPTION_NAMES, TPLUGIN_NAMES>,
   ) => {
   const api: IEventApi<TACTION_NAMES, TOBJECT_NAMES, TEvent> = {
     processSubEvent: (_: any) => _,
@@ -173,6 +181,6 @@ export const eventProcessorFactory = <
   return {
     processEvent: processEventFn,
     processSubEvent: processSubEventFn,
-    processRequest: processRequest(processEventFn),
+    processRequest: processRequest(processEventFn, eventAdaptor),
   } as IEventProcessor<TACTION_NAMES, TERROR_NAMES, TOBJECT_NAMES, TOPTION_NAMES, TPLUGIN_NAMES, TEvent>;
 };

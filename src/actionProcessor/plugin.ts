@@ -5,9 +5,9 @@ import { ERROR_NAMES_DEFAULT } from '../defaults';
 
 const pluginList = <TACTION_NAMES extends string, TPLUGIN_NAMES extends string, TEvent extends IAnyEvent>(
   plugins: IPlugin<TACTION_NAMES, TPLUGIN_NAMES, TEvent>[],
-  key: PLUGIN_APPLY_STAGE | TACTION_NAMES, action?: TACTION_NAMES,
+  key: PLUGIN_APPLY_STAGE, action?: TACTION_NAMES,
 ) => plugins
-    .map(pl => [(action ? (pl[action] || {}) : pl), pl])
+    .map(pl => [(action ? (pl[PLUGIN_APPLY_STAGE.ACTION]?.[action] || {}) : pl), pl])
   // eslint-disable-next-line @typescript-eslint/ban-ts-comment
   // @ts-ignore
     .map(([f, pl]) => [f[key], pl])
@@ -17,7 +17,7 @@ const pluginList = <TACTION_NAMES extends string, TPLUGIN_NAMES extends string, 
 const applyPluginsInner = async <TACTION_NAMES extends string, TPLUGIN_NAMES extends string, TEvent extends IAnyEvent>(
   event: TEvent,
   plugins: IPlugin<TACTION_NAMES, TPLUGIN_NAMES, TEvent>[],
-  key: PLUGIN_APPLY_STAGE | TACTION_NAMES,
+  key: PLUGIN_APPLY_STAGE,
   action?: TACTION_NAMES,
 ): Promise<void> => {
   await pluginList(plugins, key, action)
@@ -80,7 +80,7 @@ export const applyAction = async <TACTION_NAMES extends string, TPLUGIN_NAMES ex
 export const applyPlugins = async <TACTION_NAMES extends string, TPLUGIN_NAMES extends string, TEvent extends IAnyEvent>(
   event: TEvent,
   plugins: IPlugin<TACTION_NAMES, TPLUGIN_NAMES, TEvent>[],
-  key: PLUGIN_APPLY_STAGE | TACTION_NAMES,
+  key: PLUGIN_APPLY_STAGE,
 ) => applyPluginsInner(event, plugins, key);
 
 export const checkPluginList = <TACTION_NAMES extends string, TPLUGIN_NAMES extends string, TEvent extends IAnyEvent>(

@@ -18,7 +18,7 @@ export { Event } from './event/event';
 export { eventFactoryFactory } from './event';
 export { IEventFactory, IActionProcessorFactory } from './interfaces/factories';
 
-export { IPluginInfo, IPlugin, IPluginSet } from './interfaces/plugin';
+export { IPlugin, IPluginSet } from './interfaces/plugin';
 
 export { PLUGIN_APPLY_STAGE, TransformStages } from './enums';
 export { ITransformation } from './interfaces/contract';

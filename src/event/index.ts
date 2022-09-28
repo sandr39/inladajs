@@ -22,12 +22,6 @@ export const eventFactoryFactory = <
     sourceEvent: Record<string, unknown>,
     actionParams: IRawAction<TACTION_NAMES, TOBJECT_NAMES>,
     api: IEventApi<TACTION_NAMES, TOBJECT_NAMES, TEvent>,
-  ): Promise<TEvent> => {
-    const resultEvent = new EventConstructor(
-      sourceEvent, actionParams.actionName, actionParams.objectName, errorThrower, fullObjectsInfo, relations, api,
-    );
-
-    await resultEvent.init();
-
-    return resultEvent;
-  };
+  ): Promise<TEvent> => new EventConstructor(
+    sourceEvent, actionParams.actionName, actionParams.objectName, errorThrower, fullObjectsInfo, relations, api,
+  );

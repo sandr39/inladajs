@@ -110,7 +110,10 @@ export class Event
 
   add(fieldName: string | TOPTION_NAMES, value: any) {
     if (fieldName[0] === '$') {
-      return this.addOption(fieldName as TOPTION_NAMES, value);
+      if (value !== undefined) {
+        this.addOption(fieldName as TOPTION_NAMES, value);
+      }
+      return this;
     }
     if (fieldName in AUTH_FIELDS) {
       this.data.secret[fieldName as AUTH_FIELDS] = value;
@@ -139,7 +142,7 @@ export class Event
 
   getOptions(optionName?: TOPTION_NAMES) {
     if (optionName) {
-      return this.data.params?.[optionName];
+      return this.data.params[optionName];
     }
     return this.data.params;
   }
@@ -262,6 +265,10 @@ export class Event
     await this.glob.api.mergeIntoParentEvent(processedChildEvent);
 
     return processedChildEvent.result;
+  }
+
+  getPluginDataOrDefault<TResult = unknown>(pluginName: TPLUGIN_NAMES, defaultValue: TResult) {
+    return (this.pluginData[pluginName] || defaultValue) as TResult;
   }
 
   getPluginData(pluginName: TPLUGIN_NAMES) {

@@ -49,7 +49,9 @@ export interface IEvent<TACTION_NAMES extends string,
     IEvent<TACTION_NAMES, TERROR_NAMES, TOBJECT_NAMES, TOPTION_NAMES, TPLUGIN_NAMES>,
   reParseMe: (objectName: TOBJECT_NAMES) => IEvent<TACTION_NAMES, TERROR_NAMES, TOBJECT_NAMES, TOPTION_NAMES, TPLUGIN_NAMES>,
 
-  getPluginData:(pluginName: TPLUGIN_NAMES) => any,
+  getPluginData: (pluginName: TPLUGIN_NAMES) => unknown,
+  getPluginDataOrDefault: <TResult = unknown>(pluginName: TPLUGIN_NAMES, defaultValue: TResult) => TResult,
+
   setPluginData: (pluginName: TPLUGIN_NAMES, data: any) => IEvent<TACTION_NAMES, TERROR_NAMES, TOBJECT_NAMES, TOPTION_NAMES, TPLUGIN_NAMES>;
 
   setError: (
