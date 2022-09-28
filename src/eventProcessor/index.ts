@@ -11,6 +11,7 @@ import { processInTransaction } from '../utils';
 import { IEventAdaptor } from '../eventAdaptor';
 import { IEvent } from '../interfaces/event';
 import { IEventApi } from '../interfaces/api';
+import { logger } from "inlada-logger";
 
 export const processSubEvent = <
   TACTION_NAMES extends string,
@@ -59,7 +60,7 @@ export const processEvent = <
     event = await contractProvider.transformAfter(event);
     await actionProcessor.processAfterAllActions(event);
 
-    // logger.info('finished event: ', event.me.name, event.actionName);
+    logger.info('finished event: ', event.me.name, event.actionName);
 
     return event;
   };
@@ -74,10 +75,10 @@ const logOnActionFail = <
   > () => async (exception: IExceptionFromBowelsOfTheCode<TACTION_NAMES, TERROR_NAMES, TOBJECT_NAMES, TOPTION_NAMES, TPLUGIN_NAMES, TEvent>) => {
     const resultEvent = exception.$event;
     if (!exception.$event) {
-    // logger.log('exception.$event is not set');
+    logger.log('exception.$event is not set');
     }
 
-    // logger.error(resultEvent?.me.name, resultEvent?.actionName, exception?.stack);
+    logger.error(resultEvent?.me.name, resultEvent?.actionName, exception?.stack);
     return exception;
   };
 
@@ -109,12 +110,14 @@ const processActionFail = <
 
     if (resultEvent && error) {
       await processInTransaction<TACTION_NAMES, TERROR_NAMES, TOBJECT_NAMES, TOPTION_NAMES, TPLUGIN_NAMES, TEvent>(
-        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-        // @ts-ignore
-        () => resultEvent.errorThrower.processError(resultEvent, error.type), // todo understand and fix
+        async () => {
+          await resultEvent.errorThrower.processError(resultEvent, error.type);
+          return resultEvent;
+        },
         resultEvent.uid,
+        undefined,
         ex => {
-          // logger.error('in processRequestActionInnerFail', ex?.stack)
+          logger.error('in processRequestActionInnerFail', ex?.stack)
         },
       );
       if (resultEvent?.error) {

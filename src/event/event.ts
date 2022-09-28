@@ -81,6 +81,8 @@ export class Event
       tz: 0,
     };
 
+    Object.entries(this.source).forEach(([k, v]) => this.add(k, v));
+
     this.me = {
       id: filterUnique(['id', 'ids', `${objectName}Id`]
         .map(k => this.get(k))
@@ -97,12 +99,10 @@ export class Event
       .map(([e, k]) => [this.get(k) || this.getSecret()[k as AUTH_FIELDS], e])
       .filter(([id]) => id !== undefined)
       .map(([id, e]) => ({
-        id,
+        id: [id].flat(1),
         name: this.glob.fullInfo[e as TOBJECT_NAMES]?.name || e,
         type: this.glob.fullInfo[e as TOBJECT_NAMES],
       } as IMeInfo<TOBJECT_NAMES>));
-
-    Object.entries(this.source).forEach(([k, v]) => this.add(k, v));
 
     // this.reParseIds();
     // this.reParseAction();

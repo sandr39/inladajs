@@ -1,6 +1,7 @@
 import { IActionRedirect, IRawAction } from '../interfaces/base';
 import { IEvent } from '../interfaces/event';
 import { responseError, responseNotError } from './responce';
+import { logger } from "inlada-logger";
 
 const redirectAction = <TACTION_NAMES extends string, TOBJECT_NAMES extends string>(
   { actionName, objectName }: IRawAction<TACTION_NAMES, TOBJECT_NAMES>,
@@ -82,6 +83,6 @@ export const eventAdaptorFactory = <
     formSuccessResult: e => responseNotError(e),
     formErrorResult: e => responseError(e),
     formFatalErrorResult: (exception: unknown) => {
-      // logger.error((exception as any).stack, (exception as any).message);
+      logger.error((exception as any).stack, (exception as any).message);
     },
   });

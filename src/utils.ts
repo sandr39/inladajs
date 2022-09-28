@@ -7,7 +7,7 @@ export const safeFnCall = async <T = any>(logger: any, fn: () => Promise<void>, 
   try {
     return (await fn());
   } catch (ex: any) {
-    // logger.log(`${errorMessage}: `, ex, ex?.stack);
+    logger.log(`${errorMessage}: `, ex, ex?.stack);
   }
   return resultOnFail;
 };
@@ -31,7 +31,7 @@ export const processInTransaction = async <
   TEvent extends IEvent<TACTION_NAMES, TERROR_NAMES, TOBJECT_NAMES, TOPTION_NAMES, TPLUGIN_NAMES>>(
   fnAction: () => Promise<TEvent>,
   uid: string,
-  onSuccessAfterCommit = (e: TEvent) => null as any,
+  onSuccessAfterCommit: (e: TEvent) => any = () => null as any,
   onFailBeforeRollback = (exception: any) => exception,
   onFailAfterRollback = noop,
   timeout?: number,
