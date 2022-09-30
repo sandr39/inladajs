@@ -110,9 +110,7 @@ export class Event
 
   add(fieldName: string | TOPTION_NAMES, value: any) {
     if (fieldName[0] === '$') {
-      if (value !== undefined) {
-        this.addOption(fieldName as TOPTION_NAMES, value);
-      }
+      this.addOption(fieldName as TOPTION_NAMES, value);
       return this;
     }
     if (fieldName in AUTH_FIELDS) {

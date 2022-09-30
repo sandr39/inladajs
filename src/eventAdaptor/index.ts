@@ -27,11 +27,14 @@ const actionIsAllowed = <TACTION_NAMES extends string, TOBJECT_NAMES extends str
 const processOptions = <TOPTION_NAMES extends string>(event: Record<string, unknown>, allowedOptions: TOPTION_NAMES[]) => {
   const processedEvent = event;
   allowedOptions.forEach(option => {
-    processedEvent[option] = processedEvent[option]
+    const optionValue = processedEvent[option]
       || processedEvent[option.replace('$', '')]
       || (processedEvent.options as Record<string, unknown>)?.[option]
       || (processedEvent.options as Record<string, unknown>)?.[option.replace('$', '')];
     delete processedEvent[option.replace('$', '')];
+    if(optionValue !== undefined) {
+      processedEvent[option] = optionValue;
+    }
   });
   delete processedEvent.options;
 
