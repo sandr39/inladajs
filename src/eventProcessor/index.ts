@@ -11,7 +11,7 @@ import { processInTransaction } from '../utils';
 import { IEventAdaptor } from '../eventAdaptor';
 import { IEvent } from '../interfaces/event';
 import { IEventApi } from '../interfaces/api';
-import { logger } from "inlada-logger";
+import { addSourceEvent, logger } from "inlada-logger";
 
 export const processSubEvent = <
   TACTION_NAMES extends string,
@@ -50,7 +50,7 @@ export const processEvent = <
     preAction,
   ) => {
     let event = await eventFactory(sourceEvent, preAction, api);
-
+    addSourceEvent(event);
     const contractProvider = contractProviderFactory(preAction.actionName, preAction.objectName);
 
     event = await contractProvider.transformBefore(event);
@@ -60,7 +60,7 @@ export const processEvent = <
     event = await contractProvider.transformAfter(event);
     await actionProcessor.processAfterAllActions(event);
 
-    logger.info('finished event: ', event.me.name, event.actionName);
+    logger.info(event.uid,'finished event: ', event.me.name, event.actionName);
 
     return event;
   };
@@ -73,12 +73,12 @@ const logOnActionFail = <
   TPLUGIN_NAMES extends string,
   TEvent extends IEvent<TACTION_NAMES, TERROR_NAMES, TOBJECT_NAMES, TOPTION_NAMES, TPLUGIN_NAMES>
   > () => async (exception: IExceptionFromBowelsOfTheCode<TACTION_NAMES, TERROR_NAMES, TOBJECT_NAMES, TOPTION_NAMES, TPLUGIN_NAMES, TEvent>) => {
-    const resultEvent = exception.$event;
-    if (!exception.$event) {
-    logger.log('exception.$event is not set');
+    const resultEvent = exception.event;
+    if (!exception.event) {
+    logger.log('exception.event is not set');
     }
 
-    logger.error(resultEvent?.me.name, resultEvent?.actionName, exception?.stack);
+    logger.error(resultEvent?.uid, resultEvent?.me.name, resultEvent?.actionName, exception?.stack);
     return exception;
   };
 
@@ -105,8 +105,8 @@ const processActionFail = <
   >(
     eventAdaptor: IEventAdaptor<TACTION_NAMES, TERROR_NAMES, TOBJECT_NAMES, TOPTION_NAMES, TPLUGIN_NAMES>,
   ) => async (exception: IExceptionFromBowelsOfTheCode<TACTION_NAMES, TERROR_NAMES, TOBJECT_NAMES, TOPTION_NAMES, TPLUGIN_NAMES, TEvent>) => {
-    const resultEvent = exception.$event;
-    const error = exception.$error;
+    const resultEvent = exception.event;
+    const error = exception.error;
 
     if (resultEvent && error) {
       await processInTransaction<TACTION_NAMES, TERROR_NAMES, TOBJECT_NAMES, TOPTION_NAMES, TPLUGIN_NAMES, TEvent>(
@@ -117,7 +117,7 @@ const processActionFail = <
         resultEvent.uid,
         undefined,
         ex => {
-          logger.error('in processRequestActionInnerFail', ex?.stack)
+          logger.error(resultEvent.uid, 'in processRequestActionInnerFail', ex?.stack)
         },
       );
       if (resultEvent?.error) {

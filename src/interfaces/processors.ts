@@ -23,7 +23,7 @@ export interface IExceptionFromBowelsOfTheCode<
   TEvent extends IEvent<TACTION_NAMES, TERROR_NAMES, TOBJECT_NAMES, TOPTION_NAMES, TPLUGIN_NAMES>
   > {
   [k: string] : any,
-  $event: TEvent
+  event: TEvent
   stack: any
 }
 

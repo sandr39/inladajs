@@ -86,6 +86,6 @@ export const eventAdaptorFactory = <
     formSuccessResult: e => responseNotError(e),
     formErrorResult: e => responseError(e),
     formFatalErrorResult: (exception: unknown) => {
-      logger.error((exception as any).stack, (exception as any).message);
+      logger.error((exception as any).event?.uid, (exception as any).stack, (exception as any).message);
     },
   });

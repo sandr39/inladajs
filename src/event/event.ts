@@ -306,7 +306,7 @@ export class Event
     return this;
   }
 
-  mainInfo() {
+  info() {
     const res = {
       actionName: this.actionName,
       typeName: this.me.name,

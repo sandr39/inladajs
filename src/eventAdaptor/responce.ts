@@ -23,7 +23,7 @@ export const responseError = (error: {error?: IResultError<any>}) => {
 
 export const responseNotError = <TEvent extends IAnyEvent>(event: TEvent) => {
   let result;
-  // 1. have $error field set
+  // 1. have error field set
   if (event.error) {
     result = {
       error: event.error,

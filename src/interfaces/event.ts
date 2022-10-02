@@ -62,7 +62,7 @@ export interface IEvent<TACTION_NAMES extends string,
     IEvent<TACTION_NAMES, TERROR_NAMES, TOBJECT_NAMES, TOPTION_NAMES, TPLUGIN_NAMES>
 
   getEventPart: () => any, // todo make only one
-  mainInfo: () => any, // todo make only one
+  info: () => any, // todo make only one
   essentials: () => any, // todo make only one
 
   processNewEvent: (newEvent: Record<string, unknown>, preAction: IRawAction<TACTION_NAMES, TOBJECT_NAMES>) => any,
