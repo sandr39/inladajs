@@ -127,7 +127,9 @@ export class Event
     // logger.assert(fieldName[0] !== '$', 'Option name should start from $');
     // logger.assert(fieldName === OPTION_NAMES_DEFAULT.$useSecretFields && !value, 'useSecretFields can be used only with true');
 
-    if (fieldName === OPTION_NAMES_DEFAULT.$useSecretFields) {
+    if (fieldName === OPTION_NAMES_DEFAULT.$uid) {
+      this.uid = value as string;
+    } else if (fieldName === OPTION_NAMES_DEFAULT.$useSecretFields) {
       this.useSecret();
     } else if (fieldName === OPTION_NAMES_DEFAULT.$parentEvent) {
       this.parentEvent = value as IEvent<TACTION_NAMES, TERROR_NAMES, TOBJECT_NAMES, TOPTION_NAMES, TPLUGIN_NAMES>;

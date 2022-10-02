@@ -12,6 +12,7 @@ import { IEventAdaptor } from '../eventAdaptor';
 import { IEvent } from '../interfaces/event';
 import { IEventApi } from '../interfaces/api';
 import { addSourceEvent, logger } from "inlada-logger";
+import { OPTION_NAMES_DEFAULT } from "../defaults";
 
 export const processSubEvent = <
   TACTION_NAMES extends string,
@@ -149,7 +150,7 @@ const processRequest = <
     const uid = v4();
 
     return processInTransaction<TACTION_NAMES, TERROR_NAMES, TOBJECT_NAMES, TOPTION_NAMES, TPLUGIN_NAMES, TEvent>(
-      () => processEventFn(sourceEvent, preAction),
+      () => processEventFn({ ...sourceEvent, [OPTION_NAMES_DEFAULT.$uid]: uid }, preAction),
       uid,
       processRequestActionInnerSuccessFn,
       logOnActionFailFn,

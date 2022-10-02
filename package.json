@@ -1,6 +1,6 @@
 {
   "name": "inladajs",
-  "version": "1.0.10",
+  "version": "1.0.11",
   "description": "Visitor pattern based backend framework",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
