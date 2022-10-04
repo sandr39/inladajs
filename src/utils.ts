@@ -1,6 +1,6 @@
 import { transactionProcessor } from 'inlada-transaction-processor';
+import { logger } from 'inlada-logger';
 import { IEvent } from './interfaces/event';
-import { logger } from "../../inlada-logger";
 
 const noop = (_: any) => _;
 
@@ -55,7 +55,7 @@ export const processInTransaction = async <
   } catch (ex) {
     let res = await safeFnCall(() => onFailBeforeRollback(ex), 'in onFailBeforeSingleton, error', ex); // todo move to transaction?
     await transactionProcessor.rollback(uid);
-    res = await safeFnCall( () => onFailAfterRollback(res), 'in onFailAfterSingleton, error', res);
+    res = await safeFnCall(() => onFailAfterRollback(res), 'in onFailAfterSingleton, error', res);
 
     return res;
   }
