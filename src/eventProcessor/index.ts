@@ -52,7 +52,7 @@ export const processEvent = <
   ) => {
     let event = await eventFactory(sourceEvent, preAction, api);
     addSourceEvent(event);
-    const contractProvider = contractProviderFactory(preAction.actionName, preAction.objectName);
+    const contractProvider = contractProviderFactory(event.actionName, event.me.name);
 
     event = await contractProvider.transformBefore(event);
 
