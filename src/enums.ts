@@ -18,7 +18,6 @@ export enum TransformStages {
 }
 
 export enum PLUGIN_INFO_FIELD_NAMES {
-  AVAILABLE_ACTIONS= 'actions',
   NAME= 'name',
   SECTION_NAME= 'settings',
 }

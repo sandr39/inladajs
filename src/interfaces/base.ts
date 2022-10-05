@@ -1,8 +1,3 @@
-export interface IAction<TACTION_NAMES extends string, TPLUGIN_NAMES extends string> {
-  name: TACTION_NAMES,
-  plugin?: TPLUGIN_NAMES
-}
-
 export type IActionRedirect<TACTION_NAMES extends string, TOBJECT_NAMES extends string> =
   [string, string, TOBJECT_NAMES, TACTION_NAMES][];
 

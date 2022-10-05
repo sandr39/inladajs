@@ -1,4 +1,4 @@
-import { PLUGIN_APPLY_STAGE, PLUGIN_INFO_FIELD_NAMES } from '../enums';
+import { PLUGIN_APPLY_STAGE } from '../enums';
 import { IAnyEvent } from '../interfaces/event';
 import { IPlugin } from '../interfaces/plugin';
 import { ERROR_NAMES_DEFAULT } from '../defaults';
@@ -86,14 +86,15 @@ export const applyPlugins = async <TACTION_NAMES extends string, TPLUGIN_NAMES e
 export const checkPluginList = <TACTION_NAMES extends string, TPLUGIN_NAMES extends string, TEvent extends IAnyEvent>(
   plugins:IPlugin<TACTION_NAMES, TPLUGIN_NAMES, TEvent>[],
 ) => {
-  const actionsMap: { [a in TACTION_NAMES]?: boolean } = {};
-  plugins.forEach(pl => {
-    const actions = pl[PLUGIN_INFO_FIELD_NAMES.AVAILABLE_ACTIONS];
-    actions?.forEach(a => {
-      if (actionsMap[a]) {
-        throw new Error(`Duplication of actions in different plugins ${a}`);
-      }
-      actionsMap[a] = true;
-    });
-  });
+  // todo
+  // const actionsMap: { [a in TACTION_NAMES]?: boolean } = {};
+  // plugins.forEach(pl => {
+  //   const actions = pl[PLUGIN_INFO_FIELD_NAMES.AVAILABLE_ACTIONS];
+  //   actions?.forEach(a => {
+  //     if (actionsMap[a]) {
+  //       throw new Error(`Duplication of actions in different plugins ${a}`);
+  //     }
+  //     actionsMap[a] = true;
+  //   });
+  // });
 };

@@ -1,7 +1,7 @@
 export { ERROR_NAMES_DEFAULT, OPTION_NAMES_DEFAULT } from './defaults';
 
 export {
-  IIdObject, IActionRedirect, IAction, IEventResult, IRawAction,
+  IIdObject, IActionRedirect, IEventResult, IRawAction,
 } from './interfaces/base';
 export {
   IEntityRelation, RELATION_TYPE, IStorageClientFactory, IStorageClient,

@@ -1,7 +1,6 @@
 export interface IObjectInfo<TOBJECT_NAMES extends string> {
   table: string,
-  fields: Record<string, {
-    name: string,
+  fields?: Record<string, {
     type?: any,
     alias?: string,
     outer?: boolean,
