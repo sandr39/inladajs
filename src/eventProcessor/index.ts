@@ -1,4 +1,5 @@
 import { v4 } from 'uuid';
+import { addSourceEvent, logger } from 'inlada-logger';
 import {
   IActionProcessor,
   IEventProcessFn,
@@ -11,8 +12,7 @@ import { processInTransaction } from '../utils';
 import { IEventAdaptor } from '../eventAdaptor';
 import { IEvent } from '../interfaces/event';
 import { IEventApi } from '../interfaces/api';
-import { addSourceEvent, logger } from "inlada-logger";
-import { OPTION_NAMES_DEFAULT } from "../defaults";
+import { OPTION_NAMES_DEFAULT } from '../defaults';
 
 export const processSubEvent = <
   TACTION_NAMES extends string,
@@ -61,7 +61,7 @@ export const processEvent = <
     event = await contractProvider.transformAfter(event);
     await actionProcessor.processAfterAllActions(event);
 
-    logger.info(event.uid,'finished event: ', event.me.name, event.actionName);
+    logger.info(event.uid, 'finished event: ', event.me.name, event.actionName);
 
     return event;
   };
@@ -76,7 +76,7 @@ const logOnActionFail = <
   > () => async (exception: IExceptionFromBowelsOfTheCode<TACTION_NAMES, TERROR_NAMES, TOBJECT_NAMES, TOPTION_NAMES, TPLUGIN_NAMES, TEvent>) => {
     const resultEvent = exception.event;
     if (!exception.event) {
-    logger.log('exception.event is not set');
+      logger.log('exception.event is not set');
     }
 
     logger.error(resultEvent?.uid, resultEvent?.me.name, resultEvent?.actionName, exception?.stack);
@@ -107,7 +107,7 @@ const processActionFail = <
     eventAdaptor: IEventAdaptor<TACTION_NAMES, TERROR_NAMES, TOBJECT_NAMES, TOPTION_NAMES, TPLUGIN_NAMES>,
   ) => async (exception: IExceptionFromBowelsOfTheCode<TACTION_NAMES, TERROR_NAMES, TOBJECT_NAMES, TOPTION_NAMES, TPLUGIN_NAMES, TEvent>) => {
     const resultEvent = exception.event;
-    const error = exception.error;
+    const { error } = exception;
 
     if (resultEvent && error) {
       await processInTransaction<TACTION_NAMES, TERROR_NAMES, TOBJECT_NAMES, TOPTION_NAMES, TPLUGIN_NAMES, TEvent>(
@@ -118,7 +118,7 @@ const processActionFail = <
         resultEvent.uid,
         undefined,
         ex => {
-          logger.error(resultEvent.uid, 'in processRequestActionInnerFail', ex?.stack)
+          logger.error(resultEvent.uid, 'in processRequestActionInnerFail', ex?.stack);
         },
       );
       if (resultEvent?.error) {
