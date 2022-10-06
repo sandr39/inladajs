@@ -1,5 +1,4 @@
 import { IEventResult, IRawAction } from './base';
-import { IErrorThrower } from '../errors';
 import { IResultError, IError } from './error';
 
 import { AUTH_FIELDS } from '../defaults';
@@ -26,7 +25,7 @@ export interface IEvent<TACTION_NAMES extends string,
   childrenEvents: IEvent<TACTION_NAMES, TERROR_NAMES, TOBJECT_NAMES, TOPTION_NAMES, TPLUGIN_NAMES>[]
 
   error?: IResultError<TERROR_NAMES>
-  errorThrower: IErrorThrower<TERROR_NAMES, IEvent<TACTION_NAMES, TERROR_NAMES, TOBJECT_NAMES, TOPTION_NAMES, TPLUGIN_NAMES>>
+  errors: Record<TERROR_NAMES, IError<TERROR_NAMES, IEvent<TACTION_NAMES, TERROR_NAMES, TOBJECT_NAMES, TOPTION_NAMES, TPLUGIN_NAMES>>>;
 
   uid: string
 
@@ -54,12 +53,14 @@ export interface IEvent<TACTION_NAMES extends string,
 
   setPluginData: (pluginName: TPLUGIN_NAMES, data: any) => IEvent<TACTION_NAMES, TERROR_NAMES, TOBJECT_NAMES, TOPTION_NAMES, TPLUGIN_NAMES>;
 
+  setErrorAndThrow: (error: TERROR_NAMES, data?: any, originalEx?: any) => never,
   setError: (
     errorName: TERROR_NAMES,
     error: IError<TERROR_NAMES, IEvent<TACTION_NAMES, TERROR_NAMES, TOBJECT_NAMES, TOPTION_NAMES, TPLUGIN_NAMES>>,
     details?: any
   ) =>
     IEvent<TACTION_NAMES, TERROR_NAMES, TOBJECT_NAMES, TOPTION_NAMES, TPLUGIN_NAMES>
+  processError: () => Promise<IEvent<TACTION_NAMES, TERROR_NAMES, TOBJECT_NAMES, TOPTION_NAMES, TPLUGIN_NAMES>>
 
   getEventPart: () => any, // todo make only one
   info: () => any, // todo make only one

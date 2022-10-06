@@ -112,7 +112,7 @@ const processActionFail = <
     if (resultEvent && error) {
       await processInTransaction<TACTION_NAMES, TERROR_NAMES, TOBJECT_NAMES, TOPTION_NAMES, TPLUGIN_NAMES, TEvent>(
         async () => {
-          await resultEvent.errorThrower.processError(resultEvent, error.type);
+          await resultEvent.processError();
           return resultEvent;
         },
         resultEvent.uid,

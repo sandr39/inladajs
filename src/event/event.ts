@@ -2,10 +2,9 @@ import { v4 } from 'uuid';
 import { IEventResult, IRawAction } from '../interfaces/base';
 import { IEvent, IMeInfo } from '../interfaces/event';
 
-import { IErrorThrower } from '../errors';
 import { IEntityRelation } from '../interfaces/storage';
 import { IResultError, IError } from '../interfaces/error';
-import { AUTH_FIELDS, OPTION_NAMES_DEFAULT } from '../defaults';
+import { AUTH_FIELDS, ERROR_NAMES_DEFAULT, OPTION_NAMES_DEFAULT } from '../defaults';
 import { IEventApi } from '../interfaces/api';
 import { IObjectInfo } from '../interfaces/objectInfo';
 import { filterUnique, trimObject } from '../utils';
@@ -34,8 +33,6 @@ export class Event
     created: {},
   }
 
-  errorThrower: IErrorThrower<TERROR_NAMES, IEvent<TACTION_NAMES, TERROR_NAMES, TOBJECT_NAMES, TOPTION_NAMES, TPLUGIN_NAMES>>
-
   private glob: {
     fullInfo: Partial<Record<TOBJECT_NAMES, IObjectInfo<TOBJECT_NAMES>>>,
     relations: IEntityRelation<TOBJECT_NAMES>[],
@@ -54,6 +51,7 @@ export class Event
   childrenEvents: IEvent<TACTION_NAMES, TERROR_NAMES, TOBJECT_NAMES, TOPTION_NAMES, TPLUGIN_NAMES>[] = []
 
   error?: IResultError<TERROR_NAMES> = undefined
+  errors: Record<TERROR_NAMES, IError<TERROR_NAMES, IEvent<TACTION_NAMES, TERROR_NAMES, TOBJECT_NAMES, TOPTION_NAMES, TPLUGIN_NAMES>>>
 
   uid: string
 
@@ -61,7 +59,7 @@ export class Event
     sourceEvent: Record<string, unknown>,
     actionName: TACTION_NAMES,
     objectName: TOBJECT_NAMES,
-    errorThrower: IErrorThrower<TERROR_NAMES, any>,
+    errors: Record<TERROR_NAMES, IError<TERROR_NAMES, IEvent<TACTION_NAMES, TERROR_NAMES, TOBJECT_NAMES, TOPTION_NAMES, TPLUGIN_NAMES>>>,
     fullObjectsInfo: Partial<Record<TOBJECT_NAMES, IObjectInfo<TOBJECT_NAMES>>>,
     relations: IEntityRelation<TOBJECT_NAMES>[],
     api: IEventApi<TACTION_NAMES, TOBJECT_NAMES, IEvent<TACTION_NAMES, TERROR_NAMES, TOBJECT_NAMES, TOPTION_NAMES, TPLUGIN_NAMES>>,
@@ -72,7 +70,7 @@ export class Event
 
     this.parentEvent = undefined;
 
-    this.errorThrower = errorThrower;
+    this.errors = errors;
 
     this.glob = {
       fullInfo: fullObjectsInfo,
@@ -103,9 +101,6 @@ export class Event
         name: this.glob.fullInfo[e as TOBJECT_NAMES]?.name || e,
         type: this.glob.fullInfo[e as TOBJECT_NAMES],
       } as IMeInfo<TOBJECT_NAMES>));
-
-    // this.reParseIds();
-    // this.reParseAction();
   }
 
   add(fieldName: string | TOPTION_NAMES, value: any) {
@@ -181,7 +176,7 @@ export class Event
 
   getMeId() {
     if (this.me.id?.length !== 1) {
-      //      this.errorProvider.setErrorAndThrow(EErrors.notEnoughParams, ['id', '<entityType Id>']);
+      this.setErrorAndThrow(ERROR_NAMES_DEFAULT.notEnoughParams as TERROR_NAMES, ['id', '<entityType Id>']);
     }
 
     return this.me.id[0];
@@ -301,9 +296,41 @@ export class Event
       errorId: this.uid,
       type: errorName,
       title: error.title,
-      detail: details || '',
+      detail: details || this.error?.detail || '',
       status: error.status,
     };
+
+    return this;
+  }
+
+  setErrorAndThrow(error: TERROR_NAMES, data?: any, originalEx?: any): never {
+    this.setError(error, this.errors[error], data);
+    const exception = originalEx || new Error(error);
+    exception.error = this.error;
+    exception.event = this;
+    throw exception;
+  }
+
+  async processError() {
+    if (!this.error) {
+      return this;
+    }
+
+    let shouldProcessError = true;
+    let errName = this.error.type;
+    while (shouldProcessError) {
+      shouldProcessError = false;
+      const { handler } = this.errors[errName];
+      if (handler) {
+        const newErrName = await handler(this);
+        if (newErrName && newErrName !== errName) {
+          shouldProcessError = true;
+          errName = newErrName;
+        }
+      }
+    }
+
+    this.setError(errName, this.errors[errName]);
 
     return this;
   }

@@ -1,10 +1,10 @@
 import { IEventFactory } from '../interfaces/factories';
 import { IRawAction } from '../interfaces/base';
-import { IErrorThrower } from '../errors';
 import { IEvent } from '../interfaces/event';
 import { IEntityRelation } from '../interfaces/storage';
 import { IEventApi } from '../interfaces/api';
 import { IObjectInfo } from '../interfaces/objectInfo';
+import { IError } from '../interfaces/error';
 
 export const eventFactoryFactory = <
   TACTION_NAMES extends string,
@@ -14,7 +14,7 @@ export const eventFactoryFactory = <
   TPLUGIN_NAMES extends string,
   TEvent extends IEvent<TACTION_NAMES, TERROR_NAMES, TOBJECT_NAMES, TOPTION_NAMES, TPLUGIN_NAMES>
   >(
-    errorThrower: IErrorThrower<TERROR_NAMES, TEvent>,
+    errors: Record<TERROR_NAMES, IError<TERROR_NAMES, TEvent>>,
     fullObjectsInfo: Partial<Record<TOBJECT_NAMES, IObjectInfo<TOBJECT_NAMES>>>,
     relations: IEntityRelation<TOBJECT_NAMES>[],
     EventConstructor: any, // todo type
@@ -23,5 +23,5 @@ export const eventFactoryFactory = <
     actionParams: IRawAction<TACTION_NAMES, TOBJECT_NAMES>,
     api: IEventApi<TACTION_NAMES, TOBJECT_NAMES, TEvent>,
   ): Promise<TEvent> => new EventConstructor(
-    sourceEvent, actionParams.actionName, actionParams.objectName, errorThrower, fullObjectsInfo, relations, api,
+    sourceEvent, actionParams.actionName, actionParams.objectName, errors, fullObjectsInfo, relations, api,
   );

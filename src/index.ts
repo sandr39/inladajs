@@ -9,7 +9,6 @@ export {
 
 export { IEventApi } from './interfaces/api';
 export { IObjectInfo } from './interfaces/objectInfo';
-export { errorThrowerFactory, IErrorThrower } from './errors';
 export { IError } from './interfaces/error';
 export { IAnyEvent, IEvent } from './interfaces/event';
 

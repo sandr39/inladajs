@@ -6,7 +6,6 @@ export enum AUTH_FIELDS {
 export enum OPTION_NAMES_DEFAULT {
   $parentEvent = '$parentEvent',
   $useSecretFields = '$useSecretFields',
-  $doNotAfterActionProcess = '$doNotAfterActionProcess',
   $lang = '$lang',
   $pluginSet = '$pluginSet',
   $uid = '$uid'
@@ -14,5 +13,6 @@ export enum OPTION_NAMES_DEFAULT {
 
 export enum ERROR_NAMES_DEFAULT {
   timeout = 'timeout',
-  noSuchAction = 'noSuchAction'
+  noSuchAction = 'noSuchAction',
+  notEnoughParams = 'notEnoughParams',
 }

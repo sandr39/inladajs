@@ -34,7 +34,7 @@ const actionAction = async <TACTION_NAMES extends string, TPLUGIN_NAMES extends 
   const funcsToApply = pluginList(plugins, PLUGIN_APPLY_STAGE.ACTION, action);
 
   if (!funcsToApply.length) {
-    event.errorThrower.setErrorAndThrow(event, ERROR_NAMES_DEFAULT.noSuchAction, `${event.me.name}: ${action}`);
+    event.setErrorAndThrow(ERROR_NAMES_DEFAULT.noSuchAction, `${event.me.name}: ${action}`);
   }
   if (funcsToApply?.length) {
     return funcsToApply[0](event);
