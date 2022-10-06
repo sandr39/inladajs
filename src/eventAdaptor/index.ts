@@ -1,7 +1,7 @@
+import { logger } from 'inlada-logger';
 import { IActionRedirect, IRawAction } from '../interfaces/base';
 import { IEvent } from '../interfaces/event';
 import { responseError, responseNotError } from './responce';
-import { logger } from "inlada-logger";
 
 const redirectAction = <TACTION_NAMES extends string, TOBJECT_NAMES extends string>(
   { actionName, objectName }: IRawAction<TACTION_NAMES, TOBJECT_NAMES>,
@@ -32,7 +32,7 @@ const processOptions = <TOPTION_NAMES extends string>(event: Record<string, unkn
       || (processedEvent.options as Record<string, unknown>)?.[option]
       || (processedEvent.options as Record<string, unknown>)?.[option.replace('$', '')];
     delete processedEvent[option.replace('$', '')];
-    if(optionValue !== undefined) {
+    if (optionValue !== undefined) {
       processedEvent[option] = optionValue;
     }
   });

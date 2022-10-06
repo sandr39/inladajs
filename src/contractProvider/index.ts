@@ -45,6 +45,7 @@ export const contractProviderFactory = <
   >(
     contracts: Partial<Record<TOBJECTS_NAMES, ITransformation<TACTION_NAMES, TEvent>>>,
     fnBeforeEvery?: ITransformFn<TEvent>,
+    fnAfterAll?: ITransformFn<TEvent>,
   ): IContractProviderFactory<TACTION_NAMES, TOBJECTS_NAMES, TEvent> => (
     actionName: TACTION_NAMES, objectName: TOBJECTS_NAMES,
   ): IContractProvider<TEvent> => {
@@ -55,8 +56,9 @@ export const contractProviderFactory = <
         return transformWhole<TEvent>(processedBefore, contract?.[TransformStages.transformBefore]);
       },
       transformAfter: async (e: TEvent) => {
-        const processedEvent = await transformWhole(e, contract?.[TransformStages.transformAfter]);
-        return transformEach(processedEvent, contract?.[TransformStages.transformAfterEach]);
+        let processedEvent = await transformWhole(e, contract?.[TransformStages.transformAfter]);
+        processedEvent = await transformEach(processedEvent, contract?.[TransformStages.transformAfterEach]);
+        return transformWhole<TEvent>(processedEvent, fnAfterAll);
       },
     };
   };
