@@ -66,7 +66,7 @@ export interface IEvent<TACTION_NAMES extends string,
   info: () => any, // todo make only one
   essentials: () => any, // todo make only one
 
-  processNewEvent: (newEvent: Record<string, unknown>, preAction: IRawAction<TACTION_NAMES, TOBJECT_NAMES>) => any,
+  processNewEvent: (newEvent: Record<string, unknown>, rawAction: IRawAction<TACTION_NAMES, TOBJECT_NAMES>) => any,
 }
 
 export type IAnyEvent = IEvent<any, any, any, any, any>;

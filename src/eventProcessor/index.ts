@@ -27,9 +27,9 @@ export const processSubEvent = <
     api: IEventApi<TACTION_NAMES, TOBJECT_NAMES, TEvent>,
   ): IEventProcessFn<TACTION_NAMES, TERROR_NAMES, TOBJECT_NAMES, TOPTION_NAMES, TPLUGIN_NAMES, TEvent> => async (
     sourceEvent,
-    preAction,
+    rawAction,
   ) => {
-    let event = await eventFactory(sourceEvent, preAction, api);
+    let event = await eventFactory(sourceEvent, rawAction, api);
     event = await actionProcessor.processEventAction(event);
     return event;
   };
@@ -48,9 +48,9 @@ export const processEvent = <
     api: IEventApi<TACTION_NAMES, TOBJECT_NAMES, TEvent>,
   ): IEventProcessFn<TACTION_NAMES, TERROR_NAMES, TOBJECT_NAMES, TOPTION_NAMES, TPLUGIN_NAMES, TEvent> => async (
     sourceEvent,
-    preAction,
+    rawAction,
   ) => {
-    let event = await eventFactory(sourceEvent, preAction, api);
+    let event = await eventFactory(sourceEvent, rawAction, api);
     addSourceEvent(event);
     const contractProvider = contractProviderFactory(event.actionName, event.me.name);
 
@@ -145,12 +145,12 @@ const processRequest = <
   const processActionFailFn = processActionFail(eventAdaptor);
 
   return async (
-    sourceEvent: Record<string, unknown>, preAction: IRawAction<TACTION_NAMES, TOBJECT_NAMES>,
+    sourceEvent: Record<string, unknown>, rawAction: IRawAction<TACTION_NAMES, TOBJECT_NAMES>,
   ) => {
     const uid = v4();
 
     return processInTransaction<TACTION_NAMES, TERROR_NAMES, TOBJECT_NAMES, TOPTION_NAMES, TPLUGIN_NAMES, TEvent>(
-      () => processEventFn({ ...sourceEvent, [OPTION_NAMES_DEFAULT.$uid]: uid }, preAction),
+      () => processEventFn({ ...sourceEvent, [OPTION_NAMES_DEFAULT.$uid]: uid }, rawAction),
       uid,
       processRequestActionInnerSuccessFn,
       logOnActionFailFn,

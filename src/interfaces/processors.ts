@@ -11,7 +11,7 @@ export type IEventProcessFn<
   TEvent extends IEvent<TACTION_NAMES, TERROR_NAMES, TOBJECT_NAMES, TOPTION_NAMES, TPLUGIN_NAMES>
   > = (
   sourceEvent: Record<string, unknown>,
-  preAction: IRawAction<TACTION_NAMES, TOBJECT_NAMES>,
+  rawAction: IRawAction<TACTION_NAMES, TOBJECT_NAMES>,
 ) => Promise<TEvent>
 
 export interface IExceptionFromBowelsOfTheCode<
@@ -36,13 +36,13 @@ export interface IEventProcessor<
   TEvent extends IEvent<TACTION_NAMES, TERROR_NAMES, TOBJECT_NAMES, TOPTION_NAMES, TPLUGIN_NAMES>
   > {
   processEvent: (
-    sourceEvent: Record<string, unknown>, preAction: IRawAction<TACTION_NAMES, TOBJECT_NAMES>
+    sourceEvent: Record<string, unknown>, rawAction: IRawAction<TACTION_NAMES, TOBJECT_NAMES>
   ) => Promise<TEvent>,
   processSubEvent: (
-    sourceEvent: Record<string, unknown>, preAction: IRawAction<TACTION_NAMES, TOBJECT_NAMES>
+    sourceEvent: Record<string, unknown>, rawAction: IRawAction<TACTION_NAMES, TOBJECT_NAMES>
   ) => Promise<TEvent>,
   processRequest: (
-    sourceEvent: Record<string, unknown>, preAction: IRawAction<TACTION_NAMES, TOBJECT_NAMES>
+    sourceEvent: Record<string, unknown>, rawAction: IRawAction<TACTION_NAMES, TOBJECT_NAMES>
   ) => Promise<any> // todo return func, type from event adaptor, to write smth like return fn(res, lambdaRes)
 }
 

@@ -22,14 +22,12 @@ export class Event
     secret: { userId?: number, companyId?: number },
     data: Record<string, unknown>,
     lower: Record<string, string>,
-    prevData: unknown,
     created: Partial<Record<TOBJECT_NAMES, number>>
   } = {
     params: {},
     secret: {},
     data: {},
     lower: {},
-    prevData: null,
     created: {},
   }
 
@@ -243,7 +241,7 @@ export class Event
     return this;
   }
 
-  async processNewEvent(newEvent: Record<string, unknown>, preAction: IRawAction<TACTION_NAMES, TOBJECT_NAMES>) {
+  async processNewEvent(newEvent: Record<string, unknown>, rawAction: IRawAction<TACTION_NAMES, TOBJECT_NAMES>) {
     const childEvent = {
       ...this.getSecret(),
       ...(this.getOptions() as Record<TOPTION_NAMES, unknown>),
@@ -251,7 +249,7 @@ export class Event
       [OPTION_NAMES_DEFAULT.$parentEvent]: this,
     };
 
-    const processedChildEvent = await this.glob.api.processSubEvent(childEvent, preAction);
+    const processedChildEvent = await this.glob.api.processSubEvent(childEvent, rawAction);
 
     // wtf?
     this.childrenEvents.push(processedChildEvent.getEventPart());

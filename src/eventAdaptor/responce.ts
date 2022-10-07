@@ -33,13 +33,6 @@ export const responseNotError = <TEvent extends IAnyEvent>(event: TEvent) => {
       result = event.result;
     } else if (event.result === null) { // empty detail
       result = null;
-    // } else if ([ACTION_NAMES_CRUD.create, ACTION_NAMES_CRUD.update].includes(event.actionName)) {
-    //   // object, add request params
-    //   result = {
-    //     ...Object.fromEntries(Object.entries(event.get()).filter(([k]) => !k.startsWith('$'))),
-    //     ...event.result,
-    //     ...event.getCreated(),
-    //   };
     } else {
       result = event.result;
     }
