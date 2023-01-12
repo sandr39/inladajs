@@ -1,7 +1,4 @@
-import { logger } from 'inlada-logger';
 import { IActionRedirect, IRawAction } from '../interfaces/base';
-import { IEvent } from '../interfaces/event';
-import { responseError, responseNotError } from './responce';
 
 const redirectAction = <TACTION_NAMES extends string, TOBJECT_NAMES extends string>(
   { actionName, objectName }: IRawAction<TACTION_NAMES, TOBJECT_NAMES>,
@@ -41,32 +38,24 @@ const processOptions = <TOPTION_NAMES extends string>(event: Record<string, unkn
   return processedEvent;
 };
 
-export interface IEventAdaptor<
+interface IEventPreprocessor<
   TACTION_NAMES extends string,
-  TERROR_NAMES extends string,
   TOBJECT_NAMES extends string,
-  TOPTION_NAMES extends string,
-  TPLUGIN_NAMES extends string,
   > {
   makeRawEvent: (event: Record<string, unknown>, objectName: string, actionName: string, actionNameType?: string) =>
     Promise<{ rawEvent: Record<string, unknown>, rawAction: IRawAction<TACTION_NAMES, TOBJECT_NAMES>}>,
-  formSuccessResult: (e: IEvent<TACTION_NAMES, TERROR_NAMES, TOBJECT_NAMES, TOPTION_NAMES, TPLUGIN_NAMES>) => unknown
-  formErrorResult: (e: IEvent<TACTION_NAMES, TERROR_NAMES, TOBJECT_NAMES, TOPTION_NAMES, TPLUGIN_NAMES>) => unknown
-  formFatalErrorResult: (exception: unknown) => unknown
 }
 
-export const eventAdaptorFactory = <
+export const eventPreprocessorFactory = <
   TACTION_NAMES extends string,
-  TERROR_NAMES extends string,
   TOBJECT_NAMES extends string,
   TOPTION_NAMES extends string,
-  TPLUGIN_NAMES extends string,
 >(
     allowedActions: Partial<Record<TOBJECT_NAMES, TACTION_NAMES[]>>,
     allowedOptions: TOPTION_NAMES[],
     actionRedirect: IActionRedirect<TACTION_NAMES, TOBJECT_NAMES>,
-    customEventProcessor: (event: Record<string, unknown>) => Promise<Record<string, unknown>>,
-  ): IEventAdaptor<TACTION_NAMES, TERROR_NAMES, TOBJECT_NAMES, TOPTION_NAMES, TPLUGIN_NAMES> => ({
+    customEventPreProcessor: (event: Record<string, unknown>) => Promise<Record<string, unknown>> = async _ => _,
+  ): IEventPreprocessor<TACTION_NAMES, TOBJECT_NAMES> => ({
     makeRawEvent: async (event, objectName, actionName, actionNameType?) => {
       const effectiveActionName = `${actionName}${actionNameType ? `-${actionNameType}` : ''}`;
       const actionAfterRedirect = redirectAction<TACTION_NAMES, TOBJECT_NAMES>(
@@ -79,14 +68,8 @@ export const eventAdaptorFactory = <
         throw new Error(`Action '${actionAfterRedirect.actionName}' is not allowed for '${actionAfterRedirect.objectName}'`);
       }
       let processedEvent = processOptions(event, allowedOptions);
-      processedEvent = await customEventProcessor(processedEvent); // what this for? for spy ability
+      processedEvent = await customEventPreProcessor(processedEvent); // what this for? for spy ability
 
       return { rawEvent: processedEvent, rawAction: actionAfterRedirect };
-    },
-    formSuccessResult: e => responseNotError(e),
-    formErrorResult: e => responseError(e),
-    formFatalErrorResult: (exception: unknown) => {
-      logger.error((exception as any).event?.uid, (exception as any).stack, (exception as any).message);
-      return responseError({ error: (exception as any)?.error || exception });
     },
   });

@@ -9,7 +9,7 @@ export {
 
 export { IEventApi } from './interfaces/api';
 export { IObjectInfo } from './interfaces/objectInfo';
-export { IError } from './interfaces/error';
+export { IError, IResultError } from './interfaces/error';
 export { IAnyEvent, IEvent } from './interfaces/event';
 
 export { Event } from './event/event';
@@ -20,9 +20,11 @@ export { IEventFactory, IActionProcessorFactory } from './interfaces/factories';
 export { IPlugin, IPluginSet } from './interfaces/plugin';
 
 export { PLUGIN_APPLY_STAGE, TransformStages } from './enums';
-export { ITransformation } from './interfaces/contract';
+export { ITransformation, ITransformFn } from './interfaces/contract';
 
 export { eventProcessorFactory } from './eventProcessor';
-export { eventAdaptorFactory } from './eventAdaptor';
+export { eventPreprocessorFactory } from './eventPreprocessor';
 export { contractProviderFactory } from './contractProvider';
 export { actionProcessorFactory } from './actionProcessor';
+
+export { IHandler } from './interfaces/handler';

@@ -5,17 +5,17 @@ Usage (todo)
 const actionProcessor = actionProcessorFactory<ACTION_NAMES_TYPE, PLUGIN_NAMES_TYPE, IEventExtended>(pluginSet);
 const errorThrower = errorThrowerFactory<ERROR_NAMES_TYPE, IEventExtended>(ERRORS);
 const eventFactory = eventExtendedFactoryFactory(errorThrower, OBJECT_INFO, ENTITY_RELATIONS);
-const eventAdaptor = eventAdaptorFactory<ACTION_NAMES_TYPE, ERROR_NAMES_TYPE, ENTITY_NAMES, OPTIONS_TYPE, PLUGIN_NAMES_TYPE
+const eventAdapter = eventAdapterFactory<ACTION_NAMES_TYPE, ERROR_NAMES_TYPE, ENTITY_NAMES, OPTIONS_TYPE, PLUGIN_NAMES_TYPE
   >(allowedActions, allowedOptions, routingChanges, setLangAndUserId);
 const contractProvider = contractProviderFactory<ACTION_NAMES_TYPE, ENTITY_NAMES, IEventExtended
   >(TRANSFORM_CONTRACTS, setCompanyId);
 const eventProcessor = eventProcessorFactory<ACTION_NAMES_TYPE, ERROR_NAMES_TYPE, ENTITY_NAMES, OPTIONS_TYPE, PLUGIN_NAMES_TYPE, IEventExtended
-  >(contractProvider, actionProcessor, eventFactory, eventAdaptor);
+  >(contractProvider, actionProcessor, eventFactory, eventAdapter);
 
 const handler = async (req: Request, res: Response) => {
   try {
     const { objectname: objectName, actionname: actionName, actionnametype: actionNameType } = req.params;
-    const { preEvent, preAction } = await eventAdaptor.makePreEvent(req.body, objectName, actionName, actionNameType);
+    const { preEvent, preAction } = await eventAdapter.makePreEvent(req.body, objectName, actionName, actionNameType);
     const result = await eventProcessor.processRequest(preEvent, preAction);
     
     if (result.headers) {

@@ -9,7 +9,6 @@ import {
 import { IRawAction } from '../interfaces/base';
 import { IContractProviderFactory, IEventFactory } from '../interfaces/factories';
 import { processInTransaction } from '../utils';
-import { IEventAdaptor } from '../eventAdaptor';
 import { IEvent } from '../interfaces/event';
 import { IEventApi } from '../interfaces/api';
 import { OPTION_NAMES_DEFAULT } from '../defaults';
@@ -83,19 +82,6 @@ const logOnActionFail = <
     return exception;
   };
 
-const processRequestActionInnerSuccess = <
-  TACTION_NAMES extends string,
-  TERROR_NAMES extends string,
-  TOBJECT_NAMES extends string,
-  TOPTION_NAMES extends string,
-  TPLUGIN_NAMES extends string,
-  TEvent extends IEvent<TACTION_NAMES, TERROR_NAMES, TOBJECT_NAMES, TOPTION_NAMES, TPLUGIN_NAMES>
-  >(
-    eventAdaptor: IEventAdaptor<TACTION_NAMES, TERROR_NAMES, TOBJECT_NAMES, TOPTION_NAMES, TPLUGIN_NAMES>,
-  ) => async (
-    resultEvent: TEvent,
-  ) => eventAdaptor.formSuccessResult(resultEvent);
-
 const processActionFail = <
   TACTION_NAMES extends string,
   TERROR_NAMES extends string,
@@ -104,7 +90,7 @@ const processActionFail = <
   TPLUGIN_NAMES extends string,
   TEvent extends IEvent<TACTION_NAMES, TERROR_NAMES, TOBJECT_NAMES, TOPTION_NAMES, TPLUGIN_NAMES>
   >(
-    eventAdaptor: IEventAdaptor<TACTION_NAMES, TERROR_NAMES, TOBJECT_NAMES, TOPTION_NAMES, TPLUGIN_NAMES>,
+  // eventAdapter: IEventAdapter<TACTION_NAMES, TERROR_NAMES, TOBJECT_NAMES, TOPTION_NAMES, TPLUGIN_NAMES>,
   ) => async (exception: IExceptionFromBowelsOfTheCode<TACTION_NAMES, TERROR_NAMES, TOBJECT_NAMES, TOPTION_NAMES, TPLUGIN_NAMES, TEvent>) => {
     const resultEvent = exception.event;
     const { error } = exception;
@@ -121,12 +107,10 @@ const processActionFail = <
           logger.error(resultEvent.uid, 'in processRequestActionInnerFail', ex?.stack);
         },
       );
-      if (resultEvent?.error) {
-        return eventAdaptor.formErrorResult(resultEvent);
-      }
+      return resultEvent;
     }
 
-    return eventAdaptor.formFatalErrorResult(exception);
+    throw exception;
   };
 
 const processRequest = <
@@ -138,11 +122,9 @@ const processRequest = <
   TEvent extends IEvent<TACTION_NAMES, TERROR_NAMES, TOBJECT_NAMES, TOPTION_NAMES, TPLUGIN_NAMES>
   >(
     processEventFn: IEventProcessFn<TACTION_NAMES, TERROR_NAMES, TOBJECT_NAMES, TOPTION_NAMES, TPLUGIN_NAMES, TEvent>,
-    eventAdaptor: IEventAdaptor<TACTION_NAMES, TERROR_NAMES, TOBJECT_NAMES, TOPTION_NAMES, TPLUGIN_NAMES>,
   ) => {
-  const processRequestActionInnerSuccessFn = processRequestActionInnerSuccess(eventAdaptor);
   const logOnActionFailFn = logOnActionFail();
-  const processActionFailFn = processActionFail(eventAdaptor);
+  const processActionFailFn = processActionFail();
 
   return async (
     sourceEvent: Record<string, unknown>, rawAction: IRawAction<TACTION_NAMES, TOBJECT_NAMES>,
@@ -152,7 +134,7 @@ const processRequest = <
     return processInTransaction<TACTION_NAMES, TERROR_NAMES, TOBJECT_NAMES, TOPTION_NAMES, TPLUGIN_NAMES, TEvent>(
       () => processEventFn({ ...sourceEvent, [OPTION_NAMES_DEFAULT.$uid]: uid }, rawAction),
       uid,
-      processRequestActionInnerSuccessFn,
+      undefined,
       logOnActionFailFn,
       processActionFailFn,
     );
@@ -170,7 +152,6 @@ export const eventProcessorFactory = <
     contractProviderFactory: IContractProviderFactory<TACTION_NAMES, TOBJECT_NAMES, TEvent>,
     actionProcessor: IActionProcessor<TEvent>,
     eventFactory: IEventFactory<TACTION_NAMES, TERROR_NAMES, TOBJECT_NAMES, TOPTION_NAMES, TPLUGIN_NAMES, TEvent>,
-    eventAdaptor: IEventAdaptor<TACTION_NAMES, TERROR_NAMES, TOBJECT_NAMES, TOPTION_NAMES, TPLUGIN_NAMES>,
   ) => {
   const api: IEventApi<TACTION_NAMES, TOBJECT_NAMES, TEvent> = {
     processSubEvent: (_: any) => _,
@@ -185,6 +166,6 @@ export const eventProcessorFactory = <
   return {
     processEvent: processEventFn,
     processSubEvent: processSubEventFn,
-    processRequest: processRequest(processEventFn, eventAdaptor),
+    processRequest: processRequest(processEventFn),
   } as IEventProcessor<TACTION_NAMES, TERROR_NAMES, TOBJECT_NAMES, TOPTION_NAMES, TPLUGIN_NAMES, TEvent>;
 };
